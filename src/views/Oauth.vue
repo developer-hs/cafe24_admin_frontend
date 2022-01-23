@@ -1,5 +1,10 @@
 <template>
-  <div>{{ $route.query.code }}</div>
+  <b-col class="loading">
+    <b-icon icon="three-dots" animation="spin-pulse" font-scale="4"></b-icon>
+    <div>
+      <span>권한 받는 중...</span>
+    </div>
+  </b-col>
 </template>
 
 <script>
@@ -9,8 +14,11 @@ export default {
   methods: {
     ...mapActions("auth", ["requestAccessToken"]),
     requestAccessToken() {
-      console.log(this.$route.query.code);
-      this.$store.dispatch("auth/requestAccessToken", this.$route.query.code);
+      this.$store.dispatch(
+        "auth/requestAccessToken",
+        this.$route.query.code,
+        this.$router
+      );
     },
   },
   mounted() {
@@ -18,3 +26,15 @@ export default {
   },
 };
 </script>
+<style>
+html body {
+}
+
+.loading {
+  height: 100vh;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+}
+</style>

@@ -13,4 +13,10 @@ export default {
 };
 </script>
 
-<style></style>
+<style>
+* {
+  font-family: source-han-sans-korean, sans-serif;
+  font-style: normal;
+  font-weight: 200;
+}
+</style>

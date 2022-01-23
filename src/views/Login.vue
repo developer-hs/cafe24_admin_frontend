@@ -26,7 +26,7 @@ export default {
   data() {
     return {
       form: {
-        mall_id: "rlagudtjq2016",
+        mall_id: "dalnimdalring",
       },
       show: true,
     };
@@ -43,9 +43,7 @@ export default {
     getAuthorizationCode(event) {
       event.preventDefault();
       this.setMallId(this.form.mall_id);
-      window.open(
-        `https://${this.form.mall_id}.cafe24api.com/api/v2/oauth/authorize?response_type=code&client_id=${this.auth.client_id}&state=${this.auth.state}&redirect_uri=${this.auth.redirect_uri}&scope=${this.auth.scope}`
-      );
+      location.href = `https://${this.form.mall_id}.cafe24api.com/api/v2/oauth/authorize?response_type=code&client_id=${this.auth.client_id}&state=${this.auth.state}&redirect_uri=${this.auth.redirect_uri}&scope=${this.auth.scope}`;
     },
   },
 };
