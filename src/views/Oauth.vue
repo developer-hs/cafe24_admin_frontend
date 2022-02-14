@@ -1,15 +1,14 @@
 <template>
-  <b-col class="loading">
-    <b-icon icon="three-dots" animation="spin-pulse" font-scale="4"></b-icon>
-    <div>
-      <span>권한 받는 중...</span>
-    </div>
-  </b-col>
+  <Loading>
+    <template #explain>권한받는중 ...</template>
+  </Loading>
 </template>
 
 <script>
 import { mapActions } from "vuex";
+import Loading from "../components/partial/Loading.vue";
 export default {
+  components: { Loading },
   name: "Oauth",
   methods: {
     ...mapActions("auth", ["requestAccessToken"]),
@@ -26,15 +25,3 @@ export default {
   },
 };
 </script>
-<style>
-html body {
-}
-
-.loading {
-  height: 100vh;
-  display: flex;
-  flex-direction: column;
-  justify-content: center;
-  align-items: center;
-}
-</style>

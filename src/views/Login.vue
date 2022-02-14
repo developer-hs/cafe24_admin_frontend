@@ -5,7 +5,7 @@
         <b-form-group id="input-group-1" label-for="input-1">
           <b-form-input
             id="input-1"
-            v-model="form.mall_id"
+            v-model="form.mallId"
             type="text"
             placeholder="cafe24 아이디를 입력해주세요"
             required
@@ -26,25 +26,31 @@ export default {
   data() {
     return {
       form: {
-        mall_id: "dalnimdalring",
+        defaultRoute: "Dashboard",
+        mallId: "dalnimdalring",
       },
       show: true,
     };
   },
   computed: {
     ...mapState({
-      auth: (state) => state.auth,
+      auth: (state) => state.auth.data,
     }),
   },
   methods: {
     ...mapMutations({
       setMallId: "auth/setMallId",
+      setShowingRouteName: "auth/setShowingRouteName",
     }),
     getAuthorizationCode(event) {
       event.preventDefault();
-      this.setMallId(this.form.mall_id);
-      location.href = `https://${this.form.mall_id}.cafe24api.com/api/v2/oauth/authorize?response_type=code&client_id=${this.auth.client_id}&state=${this.auth.state}&redirect_uri=${this.auth.redirect_uri}&scope=${this.auth.scope}`;
+      this.setMallId(this.form.mallId);
+      console.log(this.auth);
+      location.href = `https://${this.form.mallId}.cafe24api.com/api/v2/oauth/authorize?response_type=code&client_id=${this.auth.clientId}&state=${this.auth.state}&redirect_uri=${this.auth.redirectUri}&scope=${this.auth.scope}`;
     },
+  },
+  mounted() {
+    this.setShowingRouteName(this.defaultRoute);
   },
 };
 </script>

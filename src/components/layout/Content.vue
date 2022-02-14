@@ -1,31 +1,40 @@
 <template>
   <div class="content">
     <div class="top-bar">
-      <slot name="header"></slot>
+      <a>Application</a>
+      <span class="right_angle">></span>
+      <a>{{ showingRouteName }}</a>
+      <slot name="header"> </slot>
     </div>
-    <div class="main">
-      <b-col cols="9"><slot name="main-left"></slot></b-col>
-      <b-col cols="3"><slot name="main-right"></slot></b-col>
-    </div>
+    <b-col cols="12">
+      <slot name="main"></slot>
+    </b-col>
   </div>
 </template>
 
 <script>
+import { mapState } from "vuex";
+
 export default {
   data() {
     return {};
+  },
+  computed: {
+    ...mapState({
+      showingRouteName: (state) => state.auth.route.showingRouteName,
+    }),
   },
 };
 </script>
 <style scoped>
 .content {
-  margin: 0 15px;
+  padding-top: 0.5rem;
+  padding-bottom: 0.5rem;
+  z-index: 1;
   flex: 1 1 0%;
   min-height: 100vh;
   min-width: 0;
-  padding-bottom: 2.5rem;
   border-radius: 30px;
-  padding: 0 22px;
   --tw-bg-opacity: 1;
   background-color: rgba(241, 245, 248, var(--tw-bg-opacity));
 }
@@ -37,7 +46,8 @@ export default {
 }
 
 .top-bar {
-  height: 67px;
+  height: 50px;
+  padding: 0 22px;
   z-index: 51;
   border-bottom: 1px solid #ccc;
   display: flex;
@@ -46,7 +56,7 @@ export default {
   background-color: transparent;
 }
 
-.main {
-  padding: 20px;
+.right_angle {
+  padding: 0 10px;
 }
 </style>

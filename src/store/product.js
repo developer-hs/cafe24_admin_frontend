@@ -9,12 +9,13 @@ export default {
   mutations: {
     setProductsCnt(state, count) {
       state.count = count;
+      console.log(state.count);
     },
   },
   actions: {
     requestProductsCnt({ commit }) {
       callAPI("post", "/product/info/cnt/", {
-        mall_id: store.state.auth.mallId,
+        mall_id: store.state.auth.data.mallId,
       })
         .then((response) => {
           if (response.status === 200) {

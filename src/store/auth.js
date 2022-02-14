@@ -3,11 +3,18 @@ import router from "../router";
 export default {
   namespaced: true,
   state: {
-    mallId: "",
-    redirectUri: "https://127.0.0.1:8080/oauth/redirect",
-    clientId: "70ftsywwR63eulVGGO2fdT",
-    state: "abc",
-    scope: "mall.read_product",
+    data: {
+      mallId: "",
+      redirectUri: "https://127.0.0.1:8080/oauth/redirect",
+      clientId: "jtKX97TqPJfV5qfeJ13lHN",
+      state: "abc",
+      scope: "mall.read_product,mall.read_privacy",
+      authorizeCode: "",
+    },
+    route: {
+      showingRouteName: "Dashboard",
+    },
+
     // data
   },
   getters: {
@@ -15,19 +22,26 @@ export default {
   },
   mutations: {
     setMallId(state, mallId) {
-      state.mallId = mallId;
+      state.data.mallId = mallId;
+    },
+    setShowingRouteName(state, routeName) {
+      state.route.showingRouteName = routeName;
+    },
+    setAuthorizeCode(state, authorizeCode) {
+      state.data.authorizeCode = authorizeCode;
     },
   },
   actions: {
-    requestAccessToken({ state }, authorize_code) {
+    requestAccessToken({ commit, state }, authorize_code) {
       callAPI("post", "/user/token/access/", {
-        mall_id: state.mallId,
+        mall_id: state.data.mallId,
         authorize_code: authorize_code,
-        redirect_uri: state.redirectUri,
-        client_id: state.clientId,
+        redirect_uri: state.data.redirectUri,
+        client_id: state.data.clientId,
       })
         .then((response) => {
           if (response.status == 200) {
+            commit("setAuthorizeCode", authorize_code);
             router.push({ name: "Home" });
           }
         })

@@ -14,6 +14,7 @@ export default {
 </script>
 
 <style>
+@import url("./assets/styles/custom.css");
 * {
   font-family: source-han-sans-korean, sans-serif;
   font-style: normal;
