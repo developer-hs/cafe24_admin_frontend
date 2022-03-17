@@ -15,12 +15,12 @@
   </div>
 </template>
 
-<style>
+<style scope>
 .contact-header-container {
   width: 100%;
   padding: 15px 22px;
-  border-bottom: 1px solid #ccc;
   background-color: #f1f5f8;
+  animation: UpFromBottom 0.5s linear;
 }
 
 .contact-header-container > .contact-header-items {
@@ -33,30 +33,6 @@
   display: flex;
   justify-content: center;
   font-size: 1.5rem;
-}
-
-.search-container {
-  position: relative;
-}
-
-.search-container > .bootstrap-icon {
-  top: 10px;
-  left: 18px;
-  position: absolute;
-}
-.search {
-  height: 2.3rem;
-  padding: 0 30px;
-  border: 1px solid #fff;
-  border-radius: 0.785rem;
-}
-
-.search:focus {
-  color: #212529;
-  border: 1px solid #86b7fe;
-  background-color: #fff;
-  outline: 0;
-  box-shadow: 0 0 0 0.25rem rgb(13 110 253 / 25%);
 }
 
 .square-btn {

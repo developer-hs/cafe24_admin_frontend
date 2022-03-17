@@ -2,6 +2,9 @@
 @import url("./text.css");
 @import url("./border.css");
 @import url("./size.css");
+@import url("./animation.css");
+@import url("./common.css");
+@import url("./customer.css");
 
 .overflow-hidden {
   overflow: hidden;

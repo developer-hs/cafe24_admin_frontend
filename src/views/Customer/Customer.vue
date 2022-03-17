@@ -1,48 +1,11 @@
 <template>
+  <Phone v-if="phoneModal"></Phone>
   <Content>
     <template #main>
       <!-- Add Group Name -->
-      <CreateGroupModal />
-      <AddGroupModal />
+      <IncludingGroupModal />
       <b-row class="customer-container">
-        <b-col class="customer-nav" cols="2">
-          <b-col class="p-2 menu-name">
-            <span class="h4 name">고객관리</span>
-          </b-col>
-          <b-row class="h-50 nav">
-            <b-col class="nav-items">
-              <b-button-group>
-                <b-button
-                  @click="modalToggle('create')"
-                  class="bg-white add-group-btn"
-                >
-                  <b-icon icon="pencil-square" class="color-black"></b-icon>
-                  <span class="color-black ml-1 font-weight-400 font-size-15"
-                    >그룹 추가</span
-                  >
-                </b-button>
-              </b-button-group>
-              <div class="devider-horizontal my-3"></div>
-              <div
-                class="nav-item"
-                :class="{ 'active ': currentGroup === group.name }"
-                @click="changeCurrentGroup(group.name)"
-                v-for="(group, index) in groups"
-                :key="index"
-              >
-                <span>{{ group.name }}</span>
-              </div>
-              <div class="devider-horizontal my-3"></div>
-            </b-col>
-          </b-row>
-          <div class="devider-horizontal"></div>
-          <b-row class="customer-filters">
-            <b-col>
-              <b-icon icon="filter" scale="1.1"> </b-icon>
-              <span class="p-1">Filters Area</span>
-            </b-col>
-          </b-row>
-        </b-col>
+        <GroupNav />
         <b-col cols="10 px-3 border-l">
           <b-row>
             <b-col cols="12">
@@ -50,11 +13,16 @@
                 <template #name> 전체</template>
                 <template #content>
                   <b-col class="search-container" cols="5">
-                    <b-icon icon="search" scale="0.8"></b-icon>
+                    <b-icon
+                      style="left: 18px"
+                      icon="search"
+                      scale="0.8"
+                    ></b-icon>
                     <b-form-input
+                      v-model="search"
+                      placeholder="Enter Group name"
                       class="search form-control shadow-sm drag-disable"
                       type="text"
-                      placeholder="Enter your name"
                     />
                   </b-col>
                   <b-col cols="1" class="square-btn shadow-sm">
@@ -66,7 +34,7 @@
                       <template #button-content>
                         <b-icon icon="download" scale="1.3"> </b-icon>
                       </template>
-                      <b-dropdown-item @click="requestCafe24Customer">
+                      <b-dropdown-item @click="requestPrdAndCstmData">
                         <span class="ml-1 font-weight-700 font-size-13">
                           고객정보 가져오기
                         </span>
@@ -87,35 +55,19 @@
                       <template #button-content>
                         <b-icon icon="plus" scale="1.7"> </b-icon>
                       </template>
-                      <b-dropdown-item @click="modalToggle('add')">
+                      <b-dropdown-item @click="openIncludingGroupModal">
                         <span class="ml-1 font-weight-700 font-size-13">
                           선택회원 그룹에 추가
                         </span>
                       </b-dropdown-item>
+                      <b-dropdown-item @click="smsModalToggle('phone')">
+                        <span class="ml-1 font-weight-700 font-size-13">
+                          선택회원 문자메시지 보내기
+                        </span>
+                      </b-dropdown-item>
                     </b-dropdown>
                   </b-col>
-                  <b-col
-                    cols="1"
-                    class="square-btn shadow-sm ml-2"
-                    @click="prePage()"
-                  >
-                    <b-icon icon="arrow-left" scale="1.3"></b-icon>
-                  </b-col>
-                  <b-col
-                    cols="1"
-                    class="square-btn shadow-sm ml-2"
-                    @click="nextPage()"
-                  >
-                    <b-icon icon="arrow-right" scale="1.3"></b-icon>
-                  </b-col>
-                  <b-col
-                    v-if="currentPageNumber"
-                    cols="3"
-                    class="d-flex justify-content-center align-items-center font-size-13 drag-disable"
-                  >
-                    {{ pageNumber() }} - {{ currentPageSize() }} of
-                    {{ pageCount }}
-                  </b-col>
+                  <Pagination />
                 </template>
               </ContactHeader>
               <Loading v-if="loading">
@@ -132,23 +84,28 @@
 <script>
 import Content from "../../components/layout/Content.vue";
 import ContactHeader from "../../components/layout/ContactHeader.vue";
-import CreateGroupModal from "../../components/group/CreateGroupModal.vue";
-import AddGroupModal from "../../components/group/AddGroupModal";
+import IncludingGroupModal from "../../components/group/IncludingGroupModal.vue";
 import Customers from "../../components/customer/Customers.vue";
 import Loading from "../../components/partial/Loading.vue";
-import { mapActions, mapState } from "vuex";
+import Phone from "../../components/sms/Phone.vue";
+import GroupNav from "../../components/group/GroupNav.vue";
+import Pagination from "../../components/customer/Pagination.vue";
+import { mapActions, mapMutations, mapState } from "vuex";
+
 export default {
   components: {
+    GroupNav,
+    Phone,
     Content,
     ContactHeader,
     Customers,
     Loading,
-    CreateGroupModal,
-    AddGroupModal,
+    IncludingGroupModal,
+    Pagination,
   },
   data() {
     return {
-      groupName: "",
+      search: "",
       navs: [
         { name: "전체", icon: "collection", routeName: "" },
         { name: "최근접속", icon: "broadcast", routeName: "" },
@@ -156,44 +113,53 @@ export default {
       ],
     };
   },
+  watch: {
+    search: function (newVal) {
+      this.setSearching(newVal);
+    },
+  },
+
   computed: {
     ...mapState({
-      groups: (state) => state.group.groups,
-      currentGroup: (state) => state.group.currentGroup,
-      pageSize: (state) => state.customer.paginator.page_size,
-      pageCount: (state) => state.customer.paginator.count,
-      currentPageNumber: (state) => state.customer.paginator.page_number,
+      customers: (state) => state.group.paginator.results,
       loading: (state) => state.customer.loading,
+      prevSearch: (state) => state.group.search,
+      prepareAddCustomers: (state) => state.group.prepareAddCustomers,
+      phoneModal: (state) => state.sms.phoneModal,
     }),
   },
   methods: {
+    ...mapMutations({
+      groupModalToggle: "group/modalToggle",
+      setPrepareCustomer: "group/setPrepareCustomer",
+      smsModalToggle: "sms/modalToggle",
+    }),
     ...mapActions({
-      requestAllGroups: "group/requestAllGroups",
       requestCafe24Customer: "customer/requestCafe24Customer",
-      requestPageCustomer: "customer/requestPageCustomer",
+      setSearching: "group/setSearching",
       requestRefreshCustomer: "customer/requestRefreshCustomer",
-      changeCurrentGroup: "group/changeCurrentGroup",
-      modalToggle: "group/modalToggle",
-      nextPage: "customer/nextPage",
-      prePage: "customer/prePage",
+      requestCafe24Products: "product/requestCafe24Products",
     }),
 
-    pageNumber() {
-      if (this.currentPageNumber === 1) {
-        return this.currentPageNumber;
-      } else return this.currentPageNumber * this.pageSize - this.pageSize + 1;
+    requestPrdAndCstmData() {
+      this.requestCafe24Customer();
+      this.requestCafe24Products();
     },
-    currentPageSize() {
-      if (this.pageSize * this.currentPageNumber + 1 > this.pageCount) {
-        return this.pageCount;
+    openIncludingGroupModal() {
+      this.customers.forEach((customer) => {
+        if (customer.checked === true) {
+          this.setPrepareCustomer(customer);
+        }
+      });
+      if (this.prepareAddCustomers.length >= 1) {
+        this.groupModalToggle("add");
       } else {
-        return this.pageSize * this.currentPageNumber + 1;
+        alert("그룹에 추가할 회원을 선택해 주세요.");
       }
     },
   },
   mounted() {
-    this.requestAllGroups();
-    this.requestPageCustomer();
+    this.search = this.prevSearch;
   },
 };
 </script>
@@ -210,14 +176,14 @@ export default {
 .add-group-btn:hover {
   background-color: rgba(255, 255, 255, 0.9) !important;
 }
-.customer-nav {
+.group-nav {
   padding: 0;
   z-index: 1;
   height: 100vh;
   left: 0;
 }
 
-.customer-nav > .nav,
+.group-nav > .nav,
 .customer-filters {
   padding: 1rem 2.5rem;
 }

@@ -7,8 +7,9 @@ export default {
       mallId: "",
       redirectUri: "https://127.0.0.1:8080/oauth/redirect",
       clientId: "jtKX97TqPJfV5qfeJ13lHN",
-      state: "abc",
-      scope: "mall.read_product,mall.read_privacy",
+      state: "abcd",
+      scope:
+        "mall.read_product,mall.read_privacy,mall.read_personal,mall.read_customer",
       authorizeCode: "",
     },
     route: {

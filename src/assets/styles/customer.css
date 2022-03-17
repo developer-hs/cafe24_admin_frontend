@@ -1,0 +1,28 @@
+.checked {
+  background-color: #c1eecc !important;
+}
+
+.customer {
+  border-color: #ccc;
+  cursor: pointer;
+  height: 2.5rem;
+  transition-duration: 0.15s;
+  transition-timing-function: ease-in-out;
+  animation: UpFromBottom 1s linear;
+}
+
+.customer:nth-child(odd) {
+  background-color: #fff;
+}
+
+.customer:nth-child(even) {
+  background-color: #f1f5f9;
+}
+
+.customer:hover {
+  box-shadow: 0 0.125rem 0.25rem rgb(0 0 0 / 8%);
+  transform: scale(1.01);
+  border-left: 1px solid #ccc;
+  border-right: 1px solid #ccc;
+  border-radius: 0.375rem;
+}

@@ -45,7 +45,6 @@ export default {
     getAuthorizationCode(event) {
       event.preventDefault();
       this.setMallId(this.form.mallId);
-      console.log(this.auth);
       location.href = `https://${this.form.mallId}.cafe24api.com/api/v2/oauth/authorize?response_type=code&client_id=${this.auth.clientId}&state=${this.auth.state}&redirect_uri=${this.auth.redirectUri}&scope=${this.auth.scope}`;
     },
   },

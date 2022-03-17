@@ -65,6 +65,12 @@
 .text-right {
   text-align: right;
 }
+.color-white {
+  color: #fff;
+}
+.color-light-white {
+  color: #f1f5f8;
+}
 .color-black {
   color: #000;
 }

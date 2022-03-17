@@ -3,7 +3,7 @@
     <b-col class="customer-inbox-header border-b" cols="12">
       <b-row class="h-100">
         <b-col cols="2" class="customer-inbox-header-item">
-          <div class="h-100 d-flex align-items-center ml-2">
+          <div class="h-100 d-flex align-items-center">
             <b-form-checkbox v-model="allCheck"></b-form-checkbox>
             <b-dropdown
               variant="white p-0 m-0"
@@ -18,7 +18,7 @@
           </div>
         </b-col>
         <b-col cols="2" class="customer-inbox-header-item">
-          <div class="h-100 d-flex align-items-center ml-2">
+          <div class="h-100 d-flex align-items-center">
             <b-dropdown
               variant="white p-0 m-0"
               toggle-class="text-decoration-none"
@@ -34,7 +34,7 @@
           </div>
         </b-col>
         <b-col cols="2" class="customer-inbox-header-item">
-          <div class="h-100 d-flex align-items-center ml-2">
+          <div class="h-100 d-flex align-items-center">
             <b-dropdown
               variant="white p-0 m-0"
               toggle-class="text-decoration-none"
@@ -48,7 +48,7 @@
           </div>
         </b-col>
         <b-col cols="1" class="customer-inbox-header-item">
-          <div class="h-100 d-flex align-items-center ml-2">
+          <div class="h-100 d-flex align-items-center">
             <b-dropdown
               variant="white p-0 m-0"
               toggle-class="text-decoration-none"
@@ -57,12 +57,12 @@
                 <b-icon icon="person-circle" scale="0.9"></b-icon>
                 <span class="ml-1 font-weight-700 font-size-13">아이디</span>
               </template>
-              <CustomerOrdering v-bind:orderBy="'last_login_date'" />
+              <CustomerOrdering v-bind:orderBy="'member_id'" />
             </b-dropdown>
           </div>
         </b-col>
         <b-col cols="1" class="customer-inbox-header-item">
-          <div class="h-100 d-flex align-items-center ml-2">
+          <div class="h-100 d-flex align-items-center">
             <b-dropdown
               variant="white p-0 m-0"
               toggle-class="text-decoration-none"
@@ -83,12 +83,12 @@
                 </svg>
                 <span class="ml-1 font-weight-700 font-size-13">이메일</span>
               </template>
-              <CustomerOrdering v-bind:orderBy="'last_login_date'" />
+              <CustomerOrdering v-bind:orderBy="'email'" />
             </b-dropdown>
           </div>
         </b-col>
         <b-col cols="1" class="customer-inbox-header-item">
-          <div class="h-100 d-flex align-items-center ml-2">
+          <div class="h-100 d-flex align-items-center">
             <b-dropdown
               variant="white p-0 m-0"
               toggle-class="text-decoration-none"
@@ -102,7 +102,7 @@
           </div>
         </b-col>
         <b-col cols="1" class="customer-inbox-header-item">
-          <div class="h-100 d-flex align-items-center ml-2">
+          <div class="h-100 d-flex align-items-center">
             <b-icon icon="cart2" scale="0.9"></b-icon>
             <span
               class="ml-1 font-weight-500 font-size-13 w-100 text-overflow-hidden overflow-hidden white-space-nowrap"
@@ -111,7 +111,7 @@
           </div>
         </b-col>
         <b-col cols="1" class="customer-inbox-header-item">
-          <div class="h-100 d-flex align-items-center ml-2">
+          <div class="h-100 d-flex align-items-center">
             <svg
               xmlns="http://www.w3.org/2000/svg"
               width="16"
@@ -135,7 +135,7 @@
           </div>
         </b-col>
         <b-col cols="1" class="customer-inbox-header-item">
-          <div class="h-100 d-flex align-items-center ml-2">
+          <div class="h-100 d-flex align-items-center">
             <b-icon icon="book" scale="0.9"></b-icon>
             <span
               class="ml-1 font-weight-500 font-size-13 w-100 text-overflow-hidden overflow-hidden white-space-nowrap"
@@ -148,21 +148,38 @@
     <b-col
       cols="12"
       class="customer border-b"
+      :class="{ checked: customer.checked === true }"
       v-for="(customer, index) in customers"
       :key="index"
+      :style="{ animationDuration: `${0.2 * index}s` }"
     >
-      <b-row class="h-100">
-        <b-col class="h-100" cols="2">
-          <div class="d-flex align-items-center h-100 ml-2">
-            <b-form-checkbox v-model="customer.checked"></b-form-checkbox>
-            <span
-              class="font-weight-400 font-size-14 overflow-hidden text-overflow-hidden"
+      <b-row class="h-100 w-100">
+        <b-col cols="2">
+          <div class="d-flex customer-name align-items-center h-100 ml-2">
+            <b-col cols="1">
+              <b-icon
+                v-if="!customer.checked"
+                icon="person-fill"
+                scale="1.2"
+              ></b-icon>
+              <b-icon v-if="customer.checked" scale="1.2" icon="check2-circle">
+              </b-icon>
+            </b-col>
+            <b-col
+              cols="11"
+              class="ml-2 w-100 h-100 d-flex jutify-content-center align-items-center"
+              id="customer-name"
             >
-              {{ customer.name }}
-            </span>
+              <b-col
+                @click="setCustomerId(customer.id)"
+                class="z-index-100 font-weight-400 font-size-14 overflow-hidden text-overflow-hidden"
+              >
+                {{ customer.name }}
+              </b-col>
+            </b-col>
           </div>
         </b-col>
-        <b-col class="h-100" cols="2">
+        <b-col @click="checkedToggle(customer.id)" cols="2">
           <div class="d-flex align-items-center h-100 ml-2">
             <span
               class="font-weight-400 font-size-14 overflow-hidden text-overflow-hidden"
@@ -171,7 +188,7 @@
             </span>
           </div>
         </b-col>
-        <b-col class="h-100" cols="2">
+        <b-col @click="checkedToggle(customer.id)" cols="2">
           <div class="d-flex align-items-center h-100 ml-2">
             <span
               class="font-weight-400 font-size-13 overflow-hidden text-overflow-hidden"
@@ -186,7 +203,7 @@
             </span>
           </div>
         </b-col>
-        <b-col class="h-100" cols="1">
+        <b-col @click="checkedToggle(customer.id)" cols="1">
           <div class="d-flex align-items-center h-100 ml-2">
             <span
               class="font-weight-400 font-size-14 overflow-hidden text-overflow-hidden"
@@ -195,7 +212,7 @@
             </span>
           </div>
         </b-col>
-        <b-col class="h-100" cols="1">
+        <b-col @click="checkedToggle(customer.id)" cols="1">
           <div class="d-flex align-items-center h-100 ml-2">
             <span
               class="font-weight-400 font-size-14 overflow-hidden text-overflow-hidden"
@@ -204,7 +221,7 @@
             </span>
           </div>
         </b-col>
-        <b-col class="h-100" cols="1">
+        <b-col @click="checkedToggle(customer.id)" cols="1">
           <div class="d-flex align-items-center h-100 ml-2">
             <span
               class="font-weight-400 font-size-14 overflow-hidden text-overflow-hidden"
@@ -213,25 +230,25 @@
             </span>
           </div>
         </b-col>
-        <b-col class="h-100" cols="1">
+        <b-col @click="checkedToggle(customer.id)" cols="1">
           <div class="d-flex align-items-center h-100 ml-2">
             <span
               class="font-weight-400 font-size-14 overflow-hidden text-overflow-hidden"
             >
-              <!-- {{ customer.cartCnt }} -->
+              {{ customer.cart.length }}
             </span>
           </div>
         </b-col>
-        <b-col class="h-100" cols="1">
+        <b-col @click="checkedToggle(customer.id)" cols="1">
           <div class="d-flex align-items-center h-100 ml-2">
             <span
               class="font-weight-400 font-size-14 overflow-hidden text-overflow-hidden"
             >
-              <!-- {{ messageValidStr(customer.acceptMessage) }} -->
+              {{ smsReceiveStatus(customer.sms) }}
             </span>
           </div>
         </b-col>
-        <b-col class="h-100" cols="1">
+        <b-col @click="checkedToggle(customer.id)" cols="1">
           <div class="d-flex align-items-center ml-2 h-100 w-100">
             <span
               class="font-weight-400 font-size-14 align-items-center h-100 w-100 white-space-nowrap overflow-hidden text-overflow-hidden"
@@ -245,7 +262,7 @@
   </b-col>
 </template>
 <script>
-import { mapActions, mapState } from "vuex";
+import { mapActions, mapMutations, mapState } from "vuex";
 import CustomerOrdering from "./CustomerOrdering.vue";
 export default {
   components: { CustomerOrdering },
@@ -267,33 +284,22 @@ export default {
   },
   computed: {
     ...mapState({
-      customers: (state) => state.customer.paginator.results,
+      customers: (state) => state.group.paginator.results,
     }),
   },
   watch: {
     allCheck: function (newVal) {
-      if (newVal === true) {
-        this.customers.forEach((customer) => {
-          customer.checked = true;
-        });
-      } else {
-        this.customers.forEach((customer) => {
-          customer.checked = false;
-        });
-      }
+      this.allChecked(newVal);
     },
   },
   methods: {
-    ...mapActions({
-      requestPageCustomer: "customer/requestPageCustomer",
+    ...mapMutations({
+      checkedToggle: "group/checkedToggle",
+      allChecked: "group/allChecked",
     }),
-    messageValidStr(acceptMessage) {
-      if (acceptMessage === true) {
-        return "O";
-      } else {
-        return "X";
-      }
-    },
+    ...mapActions({
+      setCustomerId: "profile/setCustomerId",
+    }),
     fullRecentlyDaysAgo(day, hour, min) {
       if (day === "0") {
         return `${hour}시간${min}분전`;
@@ -305,13 +311,21 @@ export default {
         return `${day}일${hour}시간전`;
       }
     },
+    smsReceiveStatus(status) {
+      if (status === "T") {
+        return "O";
+      } else {
+        return "X";
+      }
+    },
   },
 };
 </script>
 <style scoped>
 /* 고객 List */
+
 .customer-inbox {
-  max-height: 850px !important;
+  max-height: 870px !important;
   overflow: scroll;
 }
 
@@ -319,35 +333,12 @@ export default {
   cursor: pointer;
 }
 .customer-inbox-header {
+  animation: UpFromBottom 0.3s linear;
   padding: 10px;
   border-top: 1px solid #ccc;
   border-left: 1px solid #ccc;
   border-right: 1px solid #ccc;
   background-color: #fff;
   height: 4rem;
-}
-
-.customer {
-  padding: 10px;
-  border-color: #ccc;
-  cursor: pointer;
-  height: 2.5rem;
-  transition-duration: 0.08s;
-  transition-timing-function: ease-in-out;
-}
-
-.customer:nth-child(odd) {
-  background-color: #fff;
-}
-
-.customer:nth-child(even) {
-  background-color: #f1f5f9;
-}
-.customer:hover {
-  box-shadow: 0 0.125rem 0.25rem rgb(0 0 0 / 8%);
-  transform: scale(1.01);
-  border-left: 1px solid #ccc;
-  border-right: 1px solid #ccc;
-  border-radius: 0.375rem;
 }
 </style>

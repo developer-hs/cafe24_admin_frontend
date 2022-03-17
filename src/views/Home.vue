@@ -4,6 +4,7 @@
     <Dashboard v-if="routeName === 'Dashboard'"></Dashboard>
     <Customer v-if="routeName === 'Customer'"></Customer>
     <Product v-if="routeName === 'Product'"></Product>
+    <Profile v-if="routeName === 'Profile'"></Profile>
   </div>
 </template>
 
@@ -13,14 +14,17 @@ import Sidebar from "../components/layout/Sidebar";
 import Dashboard from "./Dashboard.vue";
 import Product from "./Product/Product.vue";
 import Customer from "./Customer/Customer.vue";
+import Profile from "./Profile/Profile.vue";
 export default {
+  components: { Sidebar, Dashboard, Product, Customer, Profile },
   data() {
     return {};
   },
   computed: {
-    ...mapState({ routeName: (state) => state.auth.route.showingRouteName }),
+    ...mapState({
+      routeName: (state) => state.auth.route.showingRouteName,
+    }),
   },
-  components: { Sidebar, Dashboard, Product, Customer },
 };
 </script>
 
@@ -41,7 +45,6 @@ export default {
 html body {
   background-color: #1e3a8a;
   overflow-x: hidden;
-  padding: 0.75rem 2rem;
   font-family: Roboto;
   font-size: 0.875rem;
   line-height: 1.25rem;

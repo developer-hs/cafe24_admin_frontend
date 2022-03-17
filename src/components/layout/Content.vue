@@ -30,6 +30,7 @@ export default {
 .content {
   padding-top: 0.5rem;
   padding-bottom: 0.5rem;
+  margin: 0.75rem 1rem 0.75rem 0;
   z-index: 1;
   flex: 1 1 0%;
   min-height: 100vh;

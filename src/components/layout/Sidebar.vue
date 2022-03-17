@@ -27,7 +27,7 @@ export default {
         { name: "대시보드", icon: "bar-chart", routeName: "Dashboard" },
         { name: "고객관리", icon: "person", routeName: "Customer" },
         { name: "상품관리", icon: "cart", routeName: "Product" },
-        { name: "Manager", icon: "cart" },
+        { name: "프로필", icon: "person-fill", routeName: "Profile" },
         { name: "Sale", icon: "cart" },
         { name: "Chat", icon: "cart" },
         { name: "Post", icon: "cart" },
@@ -37,7 +37,6 @@ export default {
       windowInnerWidth: window.innerWidth,
     };
   },
-  watch: {},
   computed: {
     ...mapState({
       showingRouteName: (state) => state.auth.route.showingRouteName,

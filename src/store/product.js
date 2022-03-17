@@ -9,14 +9,42 @@ export default {
   mutations: {
     setProductsCnt(state, count) {
       state.count = count;
-      console.log(state.count);
     },
   },
   actions: {
+    requestCafe24Products() {
+      callAPI(
+        "post",
+        `/product/info/${store.state.auth.data.authorizeCode}/cafe24/`
+      )
+        .then((response) => {
+          if (response.status === 200) {
+            console.log(response.data);
+          }
+        })
+        .catch((error) => {
+          console.log(error);
+        });
+    },
+    requestCafe24RefreshProducts() {
+      callAPI(
+        "put",
+        `/product/info/${store.state.auth.data.authorizeCode}/cafe24/`
+      )
+        .then((response) => {
+          if (response.status === 200) {
+            console.log(response.data);
+          }
+        })
+        .catch((error) => {
+          console.log(error);
+        });
+    },
     requestProductsCnt({ commit }) {
-      callAPI("post", "/product/info/cnt/", {
-        mall_id: store.state.auth.data.mallId,
-      })
+      callAPI(
+        "get",
+        `/product/info/${store.state.auth.data.authorizeCode}/cnt/`
+      )
         .then((response) => {
           if (response.status === 200) {
             commit("setProductsCnt", response.data.count);

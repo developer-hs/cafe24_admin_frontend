@@ -24,7 +24,6 @@
               </b-col>
             </b-col>
           </b-row>
-
           <b-row class="p-10 body">
             <b-col cols="12" class="d-flex">
               <b-col class="chart-card bg-transparent" cols="3">
@@ -47,17 +46,12 @@
                   class="bg-white doughnut-chart shadow-sm"
                   style="height: 245px; width: 245px"
                 >
-                  <vue3-chart-js
-                    :id="cartDoughnutChart.id"
-                    :type="cartDoughnutChart.type"
-                    :data="cartDoughnutChart.data"
-                    @before-render="beforeRenderLogic"
-                  ></vue3-chart-js>
+                  <vue3-chart-js v-bind="{ ...cartChartData }" />
                 </div>
               </b-col>
               <b-col class="chart-card bg-white shadow-sm" cols="6">
                 <h5 class="chart-name">최근 일주일 판매량</h5>
-                <div style="padding-left: 13px; height: 245px; width: 485px">
+                <div style="padding-left: 13px; height: 245px; width: 450px">
                   <vue3-chart-js
                     :id="lineChart.id"
                     :type="lineChart.type"
@@ -108,6 +102,99 @@ export default {
           iconVariant: "success",
         },
       ],
+      ageDoughnutChart: {
+        id: "AgeDoughnut",
+        type: "doughnut",
+        data: {
+          labels: ["~ 18", "19 ~ 24", "25 ~ 29", "30 ~"],
+          datasets: [
+            {
+              backgroundColor: ["#FFC533", "#FB8136", "#334E96", "#DD1B16"],
+              data: [40, 20, 80, 10],
+              borderWidth: 1,
+            },
+          ],
+        },
+      },
+      // cartDoughnutChart: {
+      //   id: "CartDoughnut",
+      //   type: "doughnut",
+      //   data: {
+      //     labels: ["VueJs", "EmberJs", "ReactJs", "AngularJs"],
+      //     datasets: [
+      //       {
+      //         backgroundColor: [
+      //           "rgba(255, 197, 51, 0.2)",
+      //           "rgba(255, 139, 39, 0.2)",
+      //           "rgba(51, 78, 150, 0.2)",
+      //           "rgba(221, 27, 22, 0.2)",
+      //         ],
+
+      //         borderColor: [
+      //           "rgba(255, 197, 51, 1)",
+      //           "rgba(255, 139, 39, 1)",
+      //           "rgba(51, 78, 150, 1)",
+      //           "rgba(221, 27, 22, 1)",
+      //         ],
+      //         data: [80, 20, 30, 10],
+      //       },
+      //     ],
+      //   },
+      // },
+
+      lineChart: {
+        id: "line",
+        type: "line",
+        data: {
+          labels: [
+            "Red",
+            "Blue",
+            "Yellow",
+            "Green",
+            "Purple",
+            "Orange",
+            "Brown",
+          ],
+          datasets: [
+            {
+              label: "# of Votes",
+              data: [50, 19, 3, 5, 2, 3, 30],
+              backgroundColor: [
+                "rgba(255, 99, 132, 0.2)",
+                "rgba(54, 162, 235, 0.2)",
+                "rgba(255, 206, 86, 0.2)",
+                "rgba(75, 192, 192, 0.2)",
+                "rgba(153, 102, 255, 0.2)",
+                "rgba(255, 159, 64, 0.2)",
+              ],
+              borderColor: [
+                "rgba(255, 99, 132, 1)",
+                "rgba(54, 162, 235, 1)",
+                "rgba(255, 206, 86, 1)",
+                "rgba(75, 192, 192, 1)",
+                "rgba(153, 102, 255, 1)",
+                "rgba(255, 159, 64, 1)",
+              ],
+              borderWidth: 1,
+            },
+          ],
+        },
+        options: {
+          plugins: {
+            zoom: {
+              zoom: {
+                wheel: {
+                  enabled: false,
+                },
+                pinch: {
+                  enabled: false,
+                },
+                mode: "y",
+              },
+            },
+          },
+        },
+      },
     };
   },
 
@@ -117,6 +204,8 @@ export default {
     ...mapState({
       productCnt: (state) => state.product.count,
       customerCnt: (state) => state.customer.count,
+      summaryCart: (state) => state.cart.summaryCart,
+      cartChartData: (state) => state.cart.cartChartData,
     }),
   },
   watch: {
@@ -142,6 +231,8 @@ export default {
     ...mapActions({
       requestProductsCnt: "product/requestProductsCnt",
       requestCustomerCnt: "customer/requestCustomerCnt",
+      requestSummaryCartInfo: "cart/requestSummaryCartInfo",
+      requestCafe24Group: "mallGroup/requestCafe24Group",
     }),
     cntValueInit() {
       this.items.forEach((item) => {
@@ -156,115 +247,124 @@ export default {
         }
       });
     },
-  },
-  setup() {
-    const ageDoughnutChart = {
-      id: "AgeDoughnut",
-      type: "doughnut",
-      data: {
-        labels: ["~ 18", "19 ~ 24", "25 ~ 29", "30 ~"],
-        datasets: [
-          {
-            backgroundColor: ["#FFC533", "#FB8136", "#334E96", "#DD1B16"],
-            data: [40, 20, 80, 10],
-            borderWidth: 1,
-          },
-        ],
-      },
-    };
-    const cartDoughnutChart = {
-      id: "CartDoughnut",
-      type: "doughnut",
-      data: {
-        labels: ["VueJs", "EmberJs", "ReactJs", "AngularJs"],
-        datasets: [
-          {
-            backgroundColor: [
-              "rgba(255, 197, 51, 0.2)",
-              "rgba(255, 139, 39, 0.2)",
-              "rgba(51, 78, 150, 0.2)",
-              "rgba(221, 27, 22, 0.2)",
-            ],
-
-            borderColor: [
-              "rgba(255, 197, 51, 1)",
-              "rgba(255, 139, 39, 1)",
-              "rgba(51, 78, 150, 1)",
-              "rgba(221, 27, 22, 1)",
-            ],
-            data: [80, 20, 30, 10],
-          },
-        ],
-      },
-    };
-
-    const lineChart = {
-      id: "line",
-      type: "line",
-      data: {
-        labels: ["Red", "Blue", "Yellow", "Green", "Purple", "Orange", "Brown"],
-        datasets: [
-          {
-            label: "# of Votes",
-            data: [50, 19, 3, 5, 2, 3, 30],
-            backgroundColor: [
-              "rgba(255, 99, 132, 0.2)",
-              "rgba(54, 162, 235, 0.2)",
-              "rgba(255, 206, 86, 0.2)",
-              "rgba(75, 192, 192, 0.2)",
-              "rgba(153, 102, 255, 0.2)",
-              "rgba(255, 159, 64, 0.2)",
-            ],
-            borderColor: [
-              "rgba(255, 99, 132, 1)",
-              "rgba(54, 162, 235, 1)",
-              "rgba(255, 206, 86, 1)",
-              "rgba(75, 192, 192, 1)",
-              "rgba(153, 102, 255, 1)",
-              "rgba(255, 159, 64, 1)",
-            ],
-            borderWidth: 1,
-          },
-        ],
-      },
-      options: {
-        plugins: {
-          zoom: {
-            zoom: {
-              wheel: {
-                enabled: false,
-              },
-              pinch: {
-                enabled: false,
-              },
-              mode: "y",
-            },
-          },
-        },
-      },
-    };
-
-    const beforeRenderLogic = (event) => {
+    beforeRenderLogic(event) {
       event;
       // ...
       // if (a === b) {
       //   event.preventDefault();
       // }
-    };
-
-    return {
-      lineChart,
-      ageDoughnutChart,
-      cartDoughnutChart,
-      beforeRenderLogic,
-    };
+    },
   },
 
   mounted() {
+    this.requestSummaryCartInfo();
     this.requestProductsCnt();
     this.requestCustomerCnt();
     this.cntValueInit();
+    this.requestCafe24Group();
   },
+  // setup() {
+  //   const ageDoughnutChart = {
+  //     id: "AgeDoughnut",
+  //     type: "doughnut",
+  //     data: {
+  //       labels: ["~ 18", "19 ~ 24", "25 ~ 29", "30 ~"],
+  //       datasets: [
+  //         {
+  //           backgroundColor: ["#FFC533", "#FB8136", "#334E96", "#DD1B16"],
+  //           data: [40, 20, 80, 10],
+  //           borderWidth: 1,
+  //         },
+  //       ],
+  //     },
+  //   };
+  //   const cartDoughnutChart = {
+  //     id: "CartDoughnut",
+  //     type: "doughnut",
+  //     data: {
+  //       labels: ["VueJs", "EmberJs", "ReactJs", "AngularJs"],
+  //       datasets: [
+  //         {
+  //           backgroundColor: [
+  //             "rgba(255, 197, 51, 0.2)",
+  //             "rgba(255, 139, 39, 0.2)",
+  //             "rgba(51, 78, 150, 0.2)",
+  //             "rgba(221, 27, 22, 0.2)",
+  //           ],
+
+  //           borderColor: [
+  //             "rgba(255, 197, 51, 1)",
+  //             "rgba(255, 139, 39, 1)",
+  //             "rgba(51, 78, 150, 1)",
+  //             "rgba(221, 27, 22, 1)",
+  //           ],
+  //           data: [80, 20, 30, 10],
+  //         },
+  //       ],
+  //     },
+  //   };
+
+  //   const lineChart = {
+  //     id: "line",
+  //     type: "line",
+  //     data: {
+  //       labels: ["Red", "Blue", "Yellow", "Green", "Purple", "Orange", "Brown"],
+  //       datasets: [
+  //         {
+  //           label: "# of Votes",
+  //           data: [50, 19, 3, 5, 2, 3, 30],
+  //           backgroundColor: [
+  //             "rgba(255, 99, 132, 0.2)",
+  //             "rgba(54, 162, 235, 0.2)",
+  //             "rgba(255, 206, 86, 0.2)",
+  //             "rgba(75, 192, 192, 0.2)",
+  //             "rgba(153, 102, 255, 0.2)",
+  //             "rgba(255, 159, 64, 0.2)",
+  //           ],
+  //           borderColor: [
+  //             "rgba(255, 99, 132, 1)",
+  //             "rgba(54, 162, 235, 1)",
+  //             "rgba(255, 206, 86, 1)",
+  //             "rgba(75, 192, 192, 1)",
+  //             "rgba(153, 102, 255, 1)",
+  //             "rgba(255, 159, 64, 1)",
+  //           ],
+  //           borderWidth: 1,
+  //         },
+  //       ],
+  //     },
+  //     options: {
+  //       plugins: {
+  //         zoom: {
+  //           zoom: {
+  //             wheel: {
+  //               enabled: false,
+  //             },
+  //             pinch: {
+  //               enabled: false,
+  //             },
+  //             mode: "y",
+  //           },
+  //         },
+  //       },
+  //     },
+  //   };
+
+  //   const beforeRenderLogic = (event) => {
+  //     event;
+  //     // ...
+  //     // if (a === b) {
+  //     //   event.preventDefault();
+  //     // }
+  //   };
+
+  //   return {
+  //     lineChart,
+  //     ageDoughnutChart,
+  //     cartDoughnutChart,
+  //     beforeRenderLogic,
+  //   };
+  // },
 };
 </script>
 

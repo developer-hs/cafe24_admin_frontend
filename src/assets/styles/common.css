@@ -1,0 +1,27 @@
+.search-container {
+  position: relative !important;
+}
+
+.search-container > .bootstrap-icon {
+  top: 10px !important;
+  position: absolute !important;
+}
+.search {
+  height: 2.3rem !important;
+  padding: 0 30px !important;
+  border: 1px solid #fff !important;
+  border-radius: 0.785rem !important;
+}
+
+.search:focus {
+  color: #212529 !important;
+  border: 1px solid #86b7fe !important;
+  background-color: #fff !important;
+  outline: 0 !important;
+  box-shadow: 0 0 0 0.25rem rgb(13 110 253 / 25%) !important;
+}
+
+.prevent-scrolling {
+  height: 100%;
+  overflow: hidden;
+}
